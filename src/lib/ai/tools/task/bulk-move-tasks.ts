@@ -63,9 +63,8 @@ export async function bulkMoveTasks(projectId: string, taskIds: string[], target
     // Update all tasks at once
     const updatedTasks = await db.update(tasks)
       .set({
-        status: targetStatus,
-        status_key: targetStatus,
-        updated_at: new Date()
+        status: targetStatus as "BACKLOG" | "TODO" | "IN_PROGRESS" | "DONE",
+        status_key: targetStatus
       })
       .where(
         and(

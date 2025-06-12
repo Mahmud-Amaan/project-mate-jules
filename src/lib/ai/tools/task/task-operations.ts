@@ -3,11 +3,12 @@
  * This file contains functions for creating, updating, and deleting tasks
  */
 
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { db } from "@/db"; // db import might become unused if all direct db calls are removed
+import { tasks } from "@/db/schema"; // tasks import might become unused
+import { eq } from "drizzle-orm"; // eq import might become unused
 import { z } from "zod";
 import { getTaskStatuses } from "./task-status";
+import { fetchProjectTasksCore } from "@/lib/tasks"; // Import the core function
 
 /**
  * Get project tasks
@@ -16,15 +17,13 @@ import { getTaskStatuses } from "./task-status";
  */
 export async function getProjectTasks(projectId: string) {
   try {
-    // Get the tasks
-    const projectTasks = await db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.project_id, projectId));
-
+    // Get the tasks using the core function
+    // No specific sorting needed for this version
+    const projectTasks = await fetchProjectTasksCore(projectId);
     return projectTasks;
   } catch (error) {
-    console.error("Failed to get project tasks:", error);
+    // The core function throws, so this catch block will handle it
+    console.error("Failed to get project tasks (task-operations):", error);
     throw error;
   }
 }

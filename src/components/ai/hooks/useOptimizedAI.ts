@@ -20,7 +20,7 @@ export function useOptimizedAI(projectId: string | undefined, open: boolean) {
   const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({});
 
   const {
-    messages: storedMessages,
+    // messages: storedMessages, // Removed as it was unused
     addMessage,
     getProjectMessages
   } = useAIStore();

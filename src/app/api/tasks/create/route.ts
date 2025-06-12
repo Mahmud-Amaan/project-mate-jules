@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from "@/db";
 import { tasks, projectTaskStatuses } from "@/db/schema";
-import { validateAuth, isValidStatusEnum } from "@/utils/task-status";
+import { validateAuth } from "@/lib/auth/utils"; // Updated import path
+import { isValidStatusEnum } from "@/utils/task-status"; // isValidStatusEnum remains
 import { eq, asc, desc } from "drizzle-orm";
 import { priorityConfig } from "@/config/dynamic-defaults";
 
@@ -11,9 +12,11 @@ import { priorityConfig } from "@/config/dynamic-defaults";
 export async function POST(request: Request) {
   try {
     // Validate authentication
-    const auth = await validateAuth();
-    if (auth.error) return auth.error;
-    const user = auth.user;
+    const authResult = await validateAuth();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error.message }, { status: authResult.error.status });
+    }
+    const user = authResult.user!; // User is guaranteed to be non-null if error is null
 
     // Parse and validate request body
     const body = await request.json();
@@ -28,7 +31,7 @@ export async function POST(request: Request) {
 
     // Get the default status from the project's task statuses
     let defaultStatus = 'BACKLOG';
-    let defaultStatusKey = 'BACKLOG';
+    // let defaultStatusKey = 'BACKLOG'; // Removed as it was unused
 
     try {
       // Try to find the default status for this project
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
       if (projectStatuses.length > 0) {
         // Use the first status (either default or lowest order)
         const firstStatus = projectStatuses[0];
-        defaultStatusKey = firstStatus.key;
+        // defaultStatusKey = firstStatus.key; // Removed as it was unused
 
         // Map to enum value if possible
         if (isValidStatusEnum(firstStatus.key)) {

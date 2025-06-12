@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { createTaskViaAI, performAIAction, createColumnViaAI } from "@/actions/ai/actions";
 import { useAIStore } from "@/store/aiStore";
-import { performOptimizedAction } from "@/lib/ai/client/optimized-client";
+// performOptimizedAction was removed as it was unused
 
 export function useAIActions(projectId: string | undefined) {
   const { addMessage, setPendingAction } = useAIStore();

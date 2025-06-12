@@ -11,7 +11,6 @@ const inter = Inter({
 });
 
 // Use Inter as a fallback instead of Geist fonts to avoid the loading error
-const fontSans = inter;
 
 export const metadata: Metadata = {
   title: "ProjectMate - AI-powered Project Management",
@@ -27,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${fontSans.variable} antialiased`}
+        className={`${inter.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Toaster />

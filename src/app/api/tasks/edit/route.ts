@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { validateAuth, isValidStatusEnum } from "@/utils/task-status";
+import { validateAuth } from "@/lib/auth/utils"; // Updated import path
 
 /**
  * PATCH: Edit a task's details
@@ -10,8 +10,11 @@ import { validateAuth, isValidStatusEnum } from "@/utils/task-status";
 export async function PATCH(request: Request) {
   try {
     // Validate authentication
-    const auth = await validateAuth();
-    if (auth.error) return auth.error;
+    const authResult = await validateAuth();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error.message }, { status: authResult.error.status });
+    }
+    // const user = authResult.user; // user is available if needed, but not used directly in this function
 
     // Parse and validate request body
     const body = await request.json();

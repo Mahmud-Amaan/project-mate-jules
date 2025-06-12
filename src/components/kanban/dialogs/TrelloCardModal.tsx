@@ -565,7 +565,7 @@ export default function TrelloCardModal({
                   ))
                 ) : (
                   <div className="text-sm text-muted-foreground p-2">
-                    No tech icons added. Click "Add Icon" to select technologies.
+                    No tech icons added. Click &quot;Add Icon&quot; to select technologies.
                   </div>
                 )}
               </div>

@@ -1,6 +1,6 @@
 import type React from "react";
 import { Suspense } from "react";
-import ProjectSkeleton from "@/components/kanban/ProjectSkeleton";
+import ProjectSkeleton from "@/components/dashboard/ProjectSkeleton";
 import UserNav from "@/components/shared/UserNav";
 import Sidebar from "@/components/shared/sidebar";
 

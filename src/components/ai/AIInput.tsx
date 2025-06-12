@@ -38,7 +38,7 @@ export const AIInput = memo(function AIInput({
   const isCreatingTask = isProcessing['createTask'];
   const isPerformingAction = isProcessing['performAction'];
   const isDisabled = !input.trim() || isTyping || !project?.id || isCreatingTask || isPerformingAction;
-  const canType = project?.id !== undefined;
+  // const canType = project?.id !== undefined; // Removed as it was unused
   const [isFocused, setIsFocused] = useState(false);
   const [showPlaceholder, setShowPlaceholder] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

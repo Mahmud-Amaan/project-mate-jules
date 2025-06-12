@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from "@/utils/supabase/server";
+// import { createClient } from "@/utils/supabase/server"; // Removed as it was only used by validateAuth
 import { db } from "@/db";
 import { projectTaskStatuses, tasks } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -26,20 +26,7 @@ export {
   isValidStatusKey
 };
 
-/**
- * Validates user authentication
- * @returns User object or error response
- */
-export async function validateAuth() {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return { error: NextResponse.json({ error: 'Authentication required' }, { status: 401 }) };
-  }
-
-  return { user };
-}
+// validateAuth function removed from here
 
 /**
  * Fetches a task status and validates it belongs to the project

@@ -6,7 +6,8 @@
 
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { deleteTask as deleteTaskBase, getProjectTasks as getProjectTasksBase } from "../../langchain/tools";
+import { getProjectTasks as getProjectTasksBase } from "../../langchain/tools"; // deleteTaskBase removed
+import { deleteTaskCore } from "@/lib/tasks"; // Added deleteTaskCore
 
 /**
  * Delete a task
@@ -14,7 +15,8 @@ import { deleteTask as deleteTaskBase, getProjectTasks as getProjectTasksBase } 
  * @returns True if the task was deleted
  */
 export async function deleteTask(taskId: string) {
-  return deleteTaskBase(taskId);
+  // Note: deleteTaskCore might take an optional userId if auth needs to be enforced here
+  return deleteTaskCore(taskId);
 }
 
 /**
@@ -45,7 +47,7 @@ export function deleteTaskTool(projectId: string) {
         }
 
         const taskTitle = taskToDelete.title;
-        const result = await deleteTaskBase(taskId);
+        const result = await deleteTaskCore(taskId); // Changed to deleteTaskCore
 
         if (!result) {
           return JSON.stringify({

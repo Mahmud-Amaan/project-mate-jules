@@ -2,10 +2,9 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { projects, projectMembers, tasks, projectTaskStatuses } from "@/db/schema";
+import { projectMembers } from "@/db/schema";
 import { createOptimizedProject } from "@/lib/ai/tools/project-creator/optimized-creator";
 import { storeOptimizedMessage } from "@/lib/ai/memory/optimized-memory";
-import { eq } from "drizzle-orm";
 
 export async function createProject(formData: FormData) {
   const supabase = await createClient();

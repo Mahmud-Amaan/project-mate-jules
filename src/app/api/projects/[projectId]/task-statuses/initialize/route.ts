@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from "@/db";
 import { projectTaskStatuses, projects } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
-import { validateAuth, generateDynamicColumns } from "@/utils/task-status";
+import { eq, and, InferSelectModel } from "drizzle-orm";
+import { validateAuth } from "@/lib/auth/utils"; // Updated import path
+import { generateDynamicColumns } from "@/utils/task-status"; // generateDynamicColumns remains
+
+type ProjectTaskStatus = InferSelectModel<typeof projectTaskStatuses>;
 
 /**
  * POST: Initialize default task statuses for a project
@@ -13,8 +16,11 @@ export async function POST(
 ) {
   try {
     // Validate authentication
-    const auth = await validateAuth();
-    if (auth.error) return auth.error;
+    const authResult = await validateAuth();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error.message }, { status: authResult.error.status });
+    }
+    // const user = authResult.user; // user is available if needed, but not used in this specific function
 
     const { projectId } = await params;
 
@@ -47,7 +53,7 @@ export async function POST(
     const statuses = [];
 
     // Create a map of existing statuses by key for quick lookup
-    const existingStatusMap: Record<string, any> = {};
+    const existingStatusMap: Record<string, ProjectTaskStatus> = {};
     for (const existingStatus of existingStatuses) {
       existingStatusMap[existingStatus.key] = existingStatus;
     }

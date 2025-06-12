@@ -47,29 +47,19 @@ export async function GET(request: NextRequest) {
             }
 
             const membersWithDefaults = members.map((member) => {
-                // Handle potentially undefined metadata
-                const metadata = member.metadata || {};
-                let parsedMetadata: Record<string, any> = {};
+                // member.metadata should be typed as UserMetadata | null from the schema
+                const userMeta = member.metadata;
 
-                if (typeof metadata === 'string') {
-                    try {
-                        parsedMetadata = JSON.parse(metadata) || {};
-                    } catch (e) {
-                        console.error('Failed to parse metadata string:', e);
-                    }
-                } else {
-                    parsedMetadata = metadata as Record<string, any>;
-                }
-
-                const email = parsedMetadata.email || '';
-                const fullName = parsedMetadata.full_name || '';
-                const avatarUrl = parsedMetadata.avatar_url || '';
+                const email = userMeta?.email || '';
+                const fullName = userMeta?.full_name || '';
+                const avatarUrl = userMeta?.avatar_url || '';
 
                 return {
                     ...member,
                     email: email,
                     name: fullName || email.split('@')[0] || 'Unknown User',
                     avatar: avatarUrl,
+                    // Remove the original metadata field from the final object sent to client
                     metadata: undefined,
                 };
             });

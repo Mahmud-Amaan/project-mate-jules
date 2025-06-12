@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { projects, projectMembers, tasks, projectTaskStatuses } from "@/db/schema";
+import { projectMembers } from "@/db/schema";
 import { createOptimizedProject } from "@/lib/ai/tools/project-creator/optimized-creator";
 
 export async function POST(request: Request) {

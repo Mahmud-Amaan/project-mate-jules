@@ -9,13 +9,3 @@ export function storeUserId(userId: string) {
     localStorage.setItem('userId', userId);
   }
 }
-
-/**
- * Removes the user ID from localStorage
- * This is called on the client side after logout
- */
-export function removeUserId() {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('userId');
-  }
-}

@@ -36,7 +36,7 @@ export async function getProjectMembers(projectId: string) {
     const supabase = await createClient();
     const userIds = memberRecords.map(record => record.userId);
 
-    let userDetails: Record<string, any> = {};
+    const userDetails: Record<string, any> = {};
 
     try {
       // Try to get user profiles first

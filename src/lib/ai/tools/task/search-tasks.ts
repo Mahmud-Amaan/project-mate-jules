@@ -27,42 +27,49 @@ export async function searchTasks(
       throw new Error("Project ID is required");
     }
 
-    // Start with the base query
-    let dbQuery = db.select()
-      .from(tasks)
-      .where(eq(tasks.project_id, projectId));
+    // Start with the base query conditions
+    const conditions = [eq(tasks.project_id, projectId)];
 
     // Add search text filter if provided
     if (query.searchText) {
       const searchPattern = `%${query.searchText}%`;
-      dbQuery = dbQuery.where(
+      conditions.push(
         or(
           like(tasks.title, searchPattern),
           like(tasks.description || '', searchPattern)
-        )
+        )! // Add non-null assertion for OR
       );
     }
 
     // Add status filter if provided
     if (query.status) {
-      if (Array.isArray(query.status)) {
-        dbQuery = dbQuery.where(inArray(tasks.status_key, query.status));
-      } else {
-        dbQuery = dbQuery.where(eq(tasks.status_key, query.status));
+      if (Array.isArray(query.status) && query.status.length > 0) {
+        conditions.push(inArray(tasks.status_key, query.status));
+      } else if (typeof query.status === 'string') {
+        conditions.push(eq(tasks.status_key, query.status));
       }
     }
 
     // Add priority filter if provided
     if (query.priority) {
-      if (Array.isArray(query.priority)) {
-        dbQuery = dbQuery.where(inArray(tasks.priority, query.priority));
-      } else {
-        dbQuery = dbQuery.where(eq(tasks.priority, query.priority));
+      if (Array.isArray(query.priority) && query.priority.length > 0) {
+        conditions.push(inArray(tasks.priority, query.priority as ("LOW" | "MEDIUM" | "HIGH" | "URGENT")[]));
+      } else if (typeof query.priority === 'string') {
+        conditions.push(eq(tasks.priority, query.priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT"));
       }
+    }
+
+    // Build the final query
+    let dbQuery = db.select().from(tasks);
+
+    if (conditions.length > 0) {
+      // @ts-ignore // Drizzle type issue with dynamic conditions array
+      dbQuery = dbQuery.where(and(...conditions));
     }
 
     // Add limit if provided
     if (query.limit && query.limit > 0) {
+      // @ts-ignore // Drizzle type issue with dynamic conditions array
       dbQuery = dbQuery.limit(query.limit);
     }
 

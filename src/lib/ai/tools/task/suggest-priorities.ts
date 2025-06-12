@@ -22,17 +22,16 @@ export async function suggestTaskPriorities(projectId: string, taskIds?: string[
     }
 
     // Build the query to get tasks
-    let query = db.select()
-      .from(tasks)
-      .where(eq(tasks.project_id, projectId));
+    const conditions = [eq(tasks.project_id, projectId)];
 
     // If specific task IDs are provided, filter by them
     if (taskIds && taskIds.length > 0) {
-      query = query.where(inArray(tasks.id, taskIds));
+      conditions.push(inArray(tasks.id, taskIds));
     }
 
     // Get the tasks
-    const tasksToProcess = await query;
+    // @ts-ignore Drizzle type issue with dynamic conditions array
+    const tasksToProcess = await db.select().from(tasks).where(and(...conditions));
 
     if (tasksToProcess.length === 0) {
       return {
