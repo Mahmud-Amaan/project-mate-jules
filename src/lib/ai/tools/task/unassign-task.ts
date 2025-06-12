@@ -19,22 +19,21 @@ export async function unassignTask(taskId: string, userId?: string) {
       throw new Error("Task ID is required");
     }
 
-    let deleteQuery = db.delete(taskAssignees);
+    let condition;
 
     if (userId) {
       // Unassign specific user
-      deleteQuery = deleteQuery.where(
-        and(
-          eq(taskAssignees.taskId, taskId),
-          eq(taskAssignees.userId, userId)
-        )
+      condition = and(
+        eq(taskAssignees.taskId, taskId),
+        eq(taskAssignees.userId, userId)
       );
     } else {
       // Unassign all users
-      deleteQuery = deleteQuery.where(eq(taskAssignees.taskId, taskId));
+      condition = eq(taskAssignees.taskId, taskId);
     }
 
-    const result = await deleteQuery.returning();
+    // @ts-ignore // Drizzle type issue with dynamic conditions
+    const result = await db.delete(taskAssignees).where(condition).returning();
 
     if (result.length === 0) {
       return {

@@ -4,8 +4,8 @@ import TrelloBoard from "@/components/kanban/TrelloBoard";
 import ProjectSkeleton from "@/components/kanban/ProjectSkeleton";
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { projects, projectMembers } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { projects } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import ProjectPageWrapper from "@/components/dashboard/project-page-wrapper";
 
 export default async function ProjectPage({

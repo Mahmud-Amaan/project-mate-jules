@@ -31,8 +31,7 @@ export async function setTaskDueDate(taskId: string, dueDate: string | null) {
     // Update the task
     const [updatedTask] = await db.update(tasks)
       .set({
-        due_date: dueDateObj,
-        updated_at: new Date()
+        due_date: dueDateObj
       })
       .where(eq(tasks.id, taskId))
       .returning();

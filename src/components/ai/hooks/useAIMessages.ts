@@ -6,14 +6,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useAIStore } from "@/store/aiStore";
 import { performAIAction } from "@/actions/ai/actions";
-import { PendingAction } from "../types";
+// PendingAction was removed as it was unused
 
 export function useAIMessages(projectId: string | undefined, open: boolean) {
   const [input, setInput] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
   const {
-    messages: storedMessages,
+    // messages: storedMessages, // Removed as it was unused
     isTyping,
     setIsTyping,
     addMessage,

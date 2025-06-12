@@ -2,9 +2,19 @@ import { Resend } from "resend";
 import { generateInviteEmailContent } from "@/utils/emailTemplates";
 import type { Role } from "@/types/permissions";
 
-// Initialize Resend with API key
-const apiKey = process.env.RESEND_API_KEY;
-const resend = new Resend(apiKey);
+// Resend client will be initialized lazily
+let resend: Resend | null = null;
+
+function getResendClient() {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is not set. Cannot send emails.");
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 export async function sendInviteEmail({
     email,
@@ -17,12 +27,15 @@ export async function sendInviteEmail({
     inviteUrl: string;
     projectName: string;
 }) {
+    const currentResendClient = getResendClient();
+    const apiKey = process.env.RESEND_API_KEY; // For logging purposes
+
     console.log("📧 Starting email send process...");
     console.log("📝 Email details:", {
         to: email,
         projectName,
         role,
-        hasApiKey: !!apiKey,
+        hasApiKey: !!apiKey, // Check apiKey directly from env for logging
         apiKeyFirstChars: apiKey ? `${apiKey.substring(0, 5)}...` : "none",
     });
 
@@ -61,13 +74,10 @@ export async function sendInviteEmail({
         });
 
         // Detailed logging before API call
-        console.log(
-            "🔑 Resend API initialized with key:",
-            apiKey ? "Valid API key" : "Missing API key"
-        );
+        // No need to log apiKey here as getResendClient would throw if not set
         console.log("📨 Calling Resend API...");
 
-        const result = await resend.emails.send({
+        const result = await currentResendClient.emails.send({
             from: emailFrom,
             to: email,
             subject: `Join ${projectName} as ${roleDisplay}`,
@@ -77,12 +87,8 @@ export async function sendInviteEmail({
         console.log("✅ Email sent successfully:", result);
         return result;
     } catch (error) {
-        console.error("❌ Email send error:");
-
-        if (!apiKey) {
-            console.error("❌ RESEND_API_KEY is missing or invalid");
-        }
-
+        console.error("❌ Email send error:", error);
+        // The error from getResendClient will be more specific if it's an API key issue
         throw error;
     }
 }

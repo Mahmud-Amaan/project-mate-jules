@@ -14,7 +14,7 @@ import { AIChat } from "./AIChat";
 import { AIInput } from "./AIInput";
 import { AISuggestions } from "./AISuggestions";
 import { AIConfirmation } from "./AIConfirmation";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// ScrollArea was removed as it was unused
 import { useProject } from "@/hooks/useProject";
 
 interface AIAssistantProps {
@@ -29,7 +29,8 @@ export function AIAssistant({
   projectId,
 }: AIAssistantProps) {
   // Use the project hook with fallback for loading state
-  const { project, isLoading } = useProject(projectId);
+  // isLoading was removed as it was unused
+  const { project } = useProject(projectId);
 
   // Create a minimal project object if project is null or loading
   const safeProject = project || (projectId ? {
@@ -71,10 +72,7 @@ export function AIAssistant({
     return createTask(taskDescription);
   };
 
-  // Handle creating multiple tasks
-  const handleCreateMultipleTasks = async (taskDescription: string) => {
-    return createMultipleTasks(taskDescription);
-  };
+  // handleCreateMultipleTasks was removed as it was unused
 
   // Handle performing an action
   const handlePerformAction = async (action?: string) => {

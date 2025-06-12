@@ -36,7 +36,7 @@ export async function getTaskAssignees(taskId: string) {
     const supabase = await createClient();
     const userIds = assigneeRecords.map(record => record.userId);
 
-    let userDetails: Record<string, any> = {};
+    const userDetails: Record<string, any> = {};
 
     try {
       // Try to get user profiles first

@@ -6,6 +6,14 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+// Define a more specific type for user details
+type UserDetail = {
+  id: string;
+  name: string;
+  email?: string;
+  avatar_url?: string;
+};
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ projectId: string }> }
@@ -71,7 +79,7 @@ export async function GET(
 
     // Get user information for members
     const memberUserIds = members?.map(member => member.user_id) || [];
-    let userDetails: Record<string, any> = {};
+    let userDetails: Record<string, UserDetail> = {};
 
     if (memberUserIds.length > 0) {
       try {
@@ -94,12 +102,12 @@ export async function GET(
             userDetails = profiles.reduce((acc, profile) => {
               acc[profile.id] = {
                 id: profile.id,
-                name: profile.full_name,
+                name: profile.full_name || '', // Ensure name is always string
                 email: profile.email,
                 avatar_url: profile.avatar_url
               };
               return acc;
-            }, {} as Record<string, any>);
+            }, {} as Record<string, UserDetail>);
 
             // If we successfully got profiles, continue with these details
             // (Don't return early as this was causing the route handler to fail)
@@ -124,7 +132,7 @@ export async function GET(
                 avatar_url: metadata.avatar_url
               };
               return acc;
-            }, {} as Record<string, any>);
+            }, {} as Record<string, UserDetail>);
         }
       } catch (userError) {
         console.error("Error processing user data:", userError);

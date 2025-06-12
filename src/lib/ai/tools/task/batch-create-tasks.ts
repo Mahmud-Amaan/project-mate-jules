@@ -65,7 +65,7 @@ export async function batchCreateTasks(projectId: string, taskList: Array<{
       return {
         title: taskData.title,
         description: taskData.description || "",
-        status: status,
+        status: status as "BACKLOG" | "TODO" | "IN_PROGRESS" | "DONE",
         status_key: status_key,
         priority: taskData.priority || "MEDIUM",
         project_id: projectId,

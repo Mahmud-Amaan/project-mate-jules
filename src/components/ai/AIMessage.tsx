@@ -5,7 +5,7 @@
 
 import { memo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Bot, User, Sparkles } from "lucide-react";
+import { Bot, Sparkles } from "lucide-react"; // User was removed
 import type { AIMessage as AIMessageType } from "@/store/aiStore";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
