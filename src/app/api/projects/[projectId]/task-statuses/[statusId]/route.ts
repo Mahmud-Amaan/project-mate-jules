@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { db } from "@/db";
 import { projectTaskStatuses, tasks } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { validateAuth, getTaskStatus, moveTasksToStatus } from "@/utils/task-status";
+import { validateAuth } from "@/lib/auth/utils"; // Updated import path for validateAuth
+import { getTaskStatus, moveTasksToStatus } from "@/utils/task-status"; // Other imports remain
 
 /**
  * PATCH: Update a task status
@@ -13,8 +14,11 @@ export async function PATCH(
 ) {
   try {
     // Validate authentication
-    const auth = await validateAuth();
-    if (auth.error) return auth.error;
+    const authResult = await validateAuth();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error.message }, { status: authResult.error.status });
+    }
+    // const user = authResult.user; // User is available if needed
 
     const { projectId, statusId } = await params;
 

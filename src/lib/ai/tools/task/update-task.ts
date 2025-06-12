@@ -6,7 +6,7 @@
 
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { updateTask as updateTaskBase } from "../../langchain/tools";
+import { updateTaskCore, TaskServiceUpdateData } from "@/lib/tasks"; // Updated import
 
 /**
  * Update a task
@@ -25,7 +25,8 @@ export async function updateTask(
     techIcons?: string[];
   }
 ) {
-  return updateTaskBase(taskId, updates);
+  // Ensure the 'updates' object matches TaskServiceUpdateData expected by updateTaskCore
+  return updateTaskCore(taskId, updates as TaskServiceUpdateData);
 }
 
 /**
@@ -57,13 +58,14 @@ export function updateTaskTool(projectId: string) {
           });
         }
 
-        const task = await updateTaskBase(taskId, {
+        const updatePayload: TaskServiceUpdateData = {
           title,
           description,
           status,
           priority,
           techIcons
-        });
+        };
+        const task = await updateTaskCore(taskId, updatePayload);
 
         if (!task) {
           return JSON.stringify({
