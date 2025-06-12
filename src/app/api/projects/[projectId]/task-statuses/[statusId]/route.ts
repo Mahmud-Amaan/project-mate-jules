@@ -74,8 +74,11 @@ export async function DELETE(
 ) {
   try {
     // Validate authentication
-    const auth = await validateAuth();
-    if (auth.error) return auth.error;
+    const authResult = await validateAuth();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error.message }, { status: authResult.error.status });
+    }
+    // const user = authResult.user; // User is available if needed
 
     const { projectId, statusId } = await params;
 
