@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getProjectTasks } from "@/lib/tasks";
 import TrelloBoard from "@/components/kanban/TrelloBoard";
-import ProjectSkeleton from "@/components/kanban/ProjectSkeleton";
+import ProjectSkeleton from "@/components/dashboard/ProjectSkeleton";
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
